@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_meetapp/core/constants/app_colors.dart';
 import 'package:qr_meetapp/core/constants/app_styles.dart';
+import 'package:qr_meetapp/core/enums/appointment_status.dart';
 import 'package:qr_meetapp/data/models/appointment_model.dart';
 
 class AppointmentCard extends StatelessWidget {
@@ -32,7 +33,7 @@ class AppointmentCard extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 24,
-                    backgroundColor: AppColors.primary.withOpacity(0.1),
+                    backgroundColor: AppColors.primary.withValues(alpha: 0.1),
                     child: Icon(
                       Icons.person,
                       color: AppColors.primary,
@@ -69,11 +70,11 @@ class AppointmentCard extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: _getStatusColor(appointment.status).withOpacity(0.1),
+                      color: _getStatusColor(appointment.status).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      appointment.status.name.toUpperCase(),
+                      appointment.status.toUpperCase(),
                       style: AppStyles.bodySmall.copyWith(
                         color: _getStatusColor(appointment.status),
                         fontWeight: FontWeight.w600,
@@ -119,12 +120,15 @@ class AppointmentCard extends StatelessWidget {
     );
   }
 
-  Color _getStatusColor(AppointmentStatus status) {
-    switch (status) {
+  Color _getStatusColor(String status) {
+    final appointmentStatus = AppointmentStatus.fromString(status);
+    switch (appointmentStatus) {
       case AppointmentStatus.pending:
         return AppColors.warning;
-      case AppointmentStatus.confirmed:
+      case AppointmentStatus.accepted:
         return AppColors.success;
+      case AppointmentStatus.declined:
+        return AppColors.error;
       case AppointmentStatus.cancelled:
         return AppColors.error;
       case AppointmentStatus.completed:

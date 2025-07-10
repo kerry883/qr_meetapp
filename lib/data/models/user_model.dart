@@ -66,4 +66,13 @@ class UserModel {
       createdAt: createdAt ?? this.createdAt,
     );
   }
+  
+  // JSON serialization methods
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel.fromMap(json);
+  }
+  
+  Map<String, dynamic> toJson() {
+    return toMap();
+  }
 }

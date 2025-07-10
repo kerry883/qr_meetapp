@@ -1,87 +1,153 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:qr_meetapp/data/models/user_model.dart';
 
 class AuthRepository {
   final FirebaseAuth _firebaseAuth;
+  final FirebaseFirestore _firestore;
 
-  AuthRepository({FirebaseAuth? firebaseAuth})
-      : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
+  AuthRepository({
+    FirebaseAuth? firebaseAuth,
+    FirebaseFirestore? firestore,
+  })  : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
+        _firestore = firestore ?? FirebaseFirestore.instance;
 
-  Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
-
-  Future<UserModel> signInWithEmailAndPassword(
-      String email, String password) async {
+  
+  /// Login with email and password
+  Future<UserModel> login(String email, String password) async {
     try {
-      final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
+      final credential = await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return _userFromFirebase(userCredential.user!);
+      
+      if (credential.user != null) {
+        return await _getUserFromFirestore(credential.user!.uid);
+      } else {
+        throw Exception('Login failed');
+      }
     } on FirebaseAuthException catch (e) {
-      throw _handleAuthError(e);
+      throw Exception(_getAuthErrorMessage(e.code));
+    } catch (e) {
+      throw Exception('Login failed: $e');
     }
   }
 
-  Future<UserModel> signUpWithEmailAndPassword(
-      String email, String password) async {
+  /// Register with email and password
+  Future<UserModel> register(String email, String password, String name) async {
     try {
-      final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+      final credential = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return _userFromFirebase(userCredential.user!);
+      
+      if (credential.user != null) {
+        // Update display name
+        await credential.user!.updateDisplayName(name);
+        
+        // Create user document in Firestore
+        final user = UserModel(
+          id: credential.user!.uid,
+          name: name,
+          email: email,
+          createdAt: DateTime.now(),
+        );
+        
+        await _firestore.collection('users').doc(user.id).set(user.toMap());
+        
+        return user;
+      } else {
+        throw Exception('Registration failed');
+      }
     } on FirebaseAuthException catch (e) {
-      throw _handleAuthError(e);
+      throw Exception(_getAuthErrorMessage(e.code));
+    } catch (e) {
+      throw Exception('Registration failed: $e');
     }
   }
 
-  Future<void> signOut() async {
-    await _firebaseAuth.signOut();
+  /// Logout current user
+  Future<void> logout() async {
+    try {
+      await _firebaseAuth.signOut();
+    } catch (e) {
+      throw Exception('Logout failed: $e');
+    }
   }
 
-  Future<void> sendPasswordResetEmail(String email) async {
+  /// Reset password
+  Future<void> resetPassword(String email) async {
     try {
       await _firebaseAuth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (e) {
-      throw _handleAuthError(e);
+      throw Exception(_getAuthErrorMessage(e.code));
+    } catch (e) {
+      throw Exception('Password reset failed: $e');
     }
   }
 
-  Future<UserModel> getCurrentUser() async {
-    final user = _firebaseAuth.currentUser;
-    if (user == null) {
-      throw Exception('User not authenticated');
+  /// Check if user is authenticated
+  Future<bool> isAuthenticated() async {
+    return _firebaseAuth.currentUser != null;
+  }
+
+  /// Get current user
+  User? get currentUser => _firebaseAuth.currentUser;
+
+  /// Check onboarding status
+  Future<bool> checkOnboardingStatus() async {
+    // For now, assume onboarding is always complete
+    // You can implement this based on your app's logic
+    return true;
+  }
+
+  /// Set onboarding as complete
+  Future<void> setOnboardingComplete() async {
+    // Implementation depends on your app's logic
+    // You might want to store this in SharedPreferences or Firestore
+  }
+
+  /// Get user from Firestore
+  Future<UserModel> _getUserFromFirestore(String userId) async {
+    try {
+      final doc = await _firestore.collection('users').doc(userId).get();
+      if (doc.exists && doc.data() != null) {
+        return UserModel.fromMap(doc.data()!);
+      } else {
+        // Create a new user document if it doesn't exist
+        final user = UserModel(
+          id: userId,
+          name: _firebaseAuth.currentUser?.displayName ?? '',
+          email: _firebaseAuth.currentUser?.email ?? '',
+          createdAt: DateTime.now(),
+        );
+        await _firestore.collection('users').doc(userId).set(user.toMap());
+        return user;
+      }
+    } catch (e) {
+      throw Exception('Failed to get user data: $e');
     }
-    return _userFromFirebase(user);
   }
 
-  UserModel _userFromFirebase(User user) {
-    return UserModel(
-      id: user.uid,
-      name: user.displayName ?? '',
-      email: user.email ?? '',
-      createdAt: user.metadata.creationTime ?? DateTime.now(),
-    );
-  }
-
-  String _handleAuthError(FirebaseAuthException e) {
-    switch (e.code) {
-      case 'invalid-email':
-        return 'Invalid email address';
-      case 'user-disabled':
-        return 'User account is disabled';
+  /// Get user-friendly error messages
+  String _getAuthErrorMessage(String code) {
+    switch (code) {
       case 'user-not-found':
-        return 'User not found';
+        return 'No user found with this email';
       case 'wrong-password':
         return 'Incorrect password';
       case 'email-already-in-use':
-        return 'Email already in use';
-      case 'operation-not-allowed':
-        return 'Operation not allowed';
+        return 'Email is already registered';
       case 'weak-password':
         return 'Password is too weak';
+      case 'invalid-email':
+        return 'Invalid email address';
+      case 'user-disabled':
+        return 'This account has been disabled';
+      case 'too-many-requests':
+        return 'Too many failed attempts. Try again later';
       default:
-        return 'Authentication failed: ${e.message}';
+        return 'Authentication failed. Please try again';
     }
   }
 }

@@ -1,12 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:qr_meetapp/data/models/user_model.dart';
 
 class AuthState extends ChangeNotifier {
-  User? _currentUser;
+  UserModel? _currentUser;
   bool _isLoading = false;
   String? _error;
 
-  User? get currentUser => _currentUser;
+  UserModel? get currentUser => _currentUser;
   bool get isLoading => _isLoading;
   String? get error => _error;
 

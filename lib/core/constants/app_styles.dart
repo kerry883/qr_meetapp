@@ -110,6 +110,18 @@ class AppStyles {
   );
   
   // Theme-based text styles
+  static const TextStyle displayLarge = TextStyle(
+    fontSize: 32,
+    fontWeight: FontWeight.bold,
+    color: AppColors.grey900,
+  );
+  
+  static const TextStyle displayMedium = TextStyle(
+    fontSize: 28,
+    fontWeight: FontWeight.w600,
+    color: AppColors.grey900,
+  );
+  
   static const TextStyle headlineSmall = TextStyle(
     fontSize: 20,
     fontWeight: FontWeight.w600,
@@ -125,6 +137,12 @@ class AppStyles {
   static const TextStyle titleLarge = TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.w600,
+    color: AppColors.grey900,
+  );
+  
+  static const TextStyle titleMedium = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
     color: AppColors.grey900,
   );
 }

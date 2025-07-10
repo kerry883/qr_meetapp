@@ -104,7 +104,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             const SizedBox(height: 10),
             Text(
-              'Please connect to the internet to use MeetApp',
+              'Please connect to the internet to use QR_MeetApp',
               style: AppTheme.textTheme.bodyLarge,
               textAlign: TextAlign.center,
             ),

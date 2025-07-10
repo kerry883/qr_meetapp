@@ -44,20 +44,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'your-web-api-key',
-    appId: 'your-web-app-id',
-    messagingSenderId: 'your-sender-id',
-    projectId: 'your-project-id',
-    authDomain: 'your-project-id.firebaseapp.com',
-    storageBucket: 'your-project-id.appspot.com',
+    apiKey: 'demo-web-api-key',
+    appId: '1:123456789:web:demo',
+    messagingSenderId: '123456789',
+    projectId: 'qr-meetapp-demo',
+    authDomain: 'qr-meetapp-demo.firebaseapp.com',
+    storageBucket: 'qr-meetapp-demo.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'your-android-api-key',
-    appId: 'your-android-app-id',
-    messagingSenderId: 'your-sender-id',
-    projectId: 'your-project-id',
-    storageBucket: 'your-project-id.appspot.com',
+    apiKey: 'demo-android-api-key',
+    appId: '1:123456789:android:demo',
+    messagingSenderId: '123456789',
+    projectId: 'qr-meetapp-demo',
+    storageBucket: 'qr-meetapp-demo.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(

@@ -3,7 +3,7 @@ import 'package:qr_meetapp/core/constants/app_colors.dart';
 import 'package:qr_meetapp/core/theme/app_theme.dart';
 
 class PrimaryButton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final String label;
   final bool isLoading;
 

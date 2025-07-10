@@ -56,6 +56,35 @@ class ProfileRepository {
     }
   }
 
+  /// Update user profile (alias for updateUserProfile)
+  Future<void> updateProfile(UserModel user) async {
+    await updateUserProfile(user);
+  }
+
+  /// Change user password
+  Future<void> changePassword(String currentPassword, String newPassword) async {
+    try {
+      final user = _firebaseAuth.currentUser;
+      if (user != null) {
+        // Re-authenticate user with current password
+        final credential = EmailAuthProvider.credential(
+          email: user.email!,
+          password: currentPassword,
+        );
+        await user.reauthenticateWithCredential(credential);
+        
+        // Update password
+        await user.updatePassword(newPassword);
+      } else {
+        throw Exception('No user is currently signed in');
+      }
+    } on FirebaseAuthException catch (e) {
+      throw Exception(_getAuthErrorMessage(e.code));
+    } catch (e) {
+      throw Exception('Failed to change password: $e');
+    }
+  }
+
   Future<String> uploadProfileImage(String userId, String filePath) async {
     try {
       final ref = _storage.ref().child('profile_images/$userId.jpg');
@@ -98,12 +127,12 @@ class ProfileRepository {
     try {
       final nameQuery = _usersCollection
           .where('name', isGreaterThanOrEqualTo: query)
-          .where('name', isLessThan: query + 'z')
+          .where('name', isLessThan: '${query}z')
           .limit(10);
 
       final emailQuery = _usersCollection
           .where('email', isGreaterThanOrEqualTo: query)
-          .where('email', isLessThan: query + 'z')
+          .where('email', isLessThan: '${query}z')
           .limit(10);
 
       final results = await Future.wait([
@@ -133,6 +162,28 @@ class ProfileRepository {
       return uniqueUsers;
     } catch (e) {
       throw Exception('Failed to search users: $e');
+    }
+  }
+
+  /// Get user-friendly error messages
+  String _getAuthErrorMessage(String code) {
+    switch (code) {
+      case 'wrong-password':
+        return 'Current password is incorrect';
+      case 'weak-password':
+        return 'New password is too weak';
+      case 'requires-recent-login':
+        return 'Please log in again to change your password';
+      case 'user-not-found':
+        return 'User not found';
+      case 'invalid-email':
+        return 'Invalid email address';
+      case 'user-disabled':
+        return 'This account has been disabled';
+      case 'too-many-requests':
+        return 'Too many failed attempts. Try again later';
+      default:
+        return 'Password change failed. Please try again';
     }
   }
 }

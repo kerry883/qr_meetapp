@@ -1,140 +1,179 @@
+import 'package:equatable/equatable.dart';
+import 'package:qr_meetapp/core/utils/date_time_utils.dart';
 
-
-enum AppointmentStatus {
-  pending,
-  confirmed,
-  cancelled,
-  completed,
-}
-
-class AppointmentModel {
+class AppointmentModel extends Equatable {
   final String id;
-  final String hostId;
-  final String guestId;
-  final String category;
   final String title;
   final String description;
-  final String location;
+  final String hostId;
+  final String hostName;
+  final String? guestId;
+  final String? guestName;
   final DateTime startTime;
   final DateTime endTime;
-  final AppointmentStatus status;
+  final String location;
+  final String? categoryId;
+  final String status; // pending, accepted, declined, completed
   final String? qrCode;
-  final DateTime? qrExpiry;
   final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? updatedAt;
 
-  AppointmentModel({
+  const AppointmentModel({
     required this.id,
-    required this.hostId,
-    required this.guestId,
-    required this.category,
     required this.title,
     required this.description,
-    required this.location,
+    required this.hostId,
+    required this.hostName,
+    this.guestId,
+    this.guestName,
     required this.startTime,
     required this.endTime,
-    this.status = AppointmentStatus.pending,
+    required this.location,
+    this.categoryId,
+    required this.status,
     this.qrCode,
-    this.qrExpiry,
     required this.createdAt,
-    required this.updatedAt,
+    this.updatedAt,
   });
 
   factory AppointmentModel.fromMap(Map<String, dynamic> map) {
     return AppointmentModel(
       id: map['id'] ?? '',
-      hostId: map['hostId'] ?? '',
-      guestId: map['guestId'] ?? '',
-      category: map['category'] ?? '',
       title: map['title'] ?? '',
       description: map['description'] ?? '',
-      location: map['location'] ?? '',
+      hostId: map['hostId'] ?? '',
+      hostName: map['hostName'] ?? '',
+      guestId: map['guestId'],
+      guestName: map['guestName'],
       startTime: DateTime.parse(map['startTime']),
       endTime: DateTime.parse(map['endTime']),
-      status: _parseStatus(map['status']),
+      location: map['location'] ?? '',
+      categoryId: map['categoryId'],
+      status: map['status'] ?? 'pending',
       qrCode: map['qrCode'],
-      qrExpiry: map['qrExpiry'] != null ? DateTime.parse(map['qrExpiry']) : null,
       createdAt: DateTime.parse(map['createdAt']),
-      updatedAt: DateTime.parse(map['updatedAt']),
+      updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt']) : null,
     );
-  }
-
-  static AppointmentStatus _parseStatus(String status) {
-    switch (status) {
-      case 'confirmed':
-        return AppointmentStatus.confirmed;
-      case 'cancelled':
-        return AppointmentStatus.cancelled;
-      case 'completed':
-        return AppointmentStatus.completed;
-      default:
-        return AppointmentStatus.pending;
-    }
   }
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'hostId': hostId,
-      'guestId': guestId,
-      'category': category,
       'title': title,
       'description': description,
-      'location': location,
+      'hostId': hostId,
+      'hostName': hostName,
+      'guestId': guestId,
+      'guestName': guestName,
       'startTime': startTime.toIso8601String(),
       'endTime': endTime.toIso8601String(),
-      'status': status.name,
+      'location': location,
+      'categoryId': categoryId,
+      'status': status,
       'qrCode': qrCode,
-      'qrExpiry': qrExpiry?.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
     };
   }
 
-  String get statusText {
-    switch (status) {
-      case AppointmentStatus.pending:
-        return 'Pending';
-      case AppointmentStatus.confirmed:
-        return 'Confirmed';
-      case AppointmentStatus.cancelled:
-        return 'Cancelled';
-      case AppointmentStatus.completed:
-        return 'Completed';
-    }
+  factory AppointmentModel.fromJson(Map<String, dynamic> json) {
+    return AppointmentModel.fromMap(json);
+  }
+
+  Map<String, dynamic> toJson() {
+    return toMap();
   }
 
   AppointmentModel copyWith({
     String? id,
-    String? hostId,
-    String? guestId,
-    String? category,
     String? title,
     String? description,
-    String? location,
+    String? hostId,
+    String? hostName,
+    String? guestId,
+    String? guestName,
     DateTime? startTime,
     DateTime? endTime,
-    AppointmentStatus? status,
+    String? location,
+    String? categoryId,
+    String? status,
     String? qrCode,
-    DateTime? qrExpiry,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
     return AppointmentModel(
       id: id ?? this.id,
-      hostId: hostId ?? this.hostId,
-      guestId: guestId ?? this.guestId,
-      category: category ?? this.category,
       title: title ?? this.title,
       description: description ?? this.description,
-      location: location ?? this.location,
+      hostId: hostId ?? this.hostId,
+      hostName: hostName ?? this.hostName,
+      guestId: guestId ?? this.guestId,
+      guestName: guestName ?? this.guestName,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
+      location: location ?? this.location,
+      categoryId: categoryId ?? this.categoryId,
       status: status ?? this.status,
       qrCode: qrCode ?? this.qrCode,
-      qrExpiry: qrExpiry ?? this.qrExpiry,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+
+  /// Get formatted date string
+  String get formattedDate {
+    return DateTimeUtils.formatDate(startTime);
+  }
+
+  /// Get formatted time string
+  String get formattedTime {
+    return DateTimeUtils.formatTime(startTime);
+  }
+
+  /// Get formatted date and time string
+  String get formattedDateTime {
+    return DateTimeUtils.formatDateTime(startTime);
+  }
+
+  /// Get duration of the appointment
+  String get duration {
+    return DateTimeUtils.getDuration(startTime, endTime);
+  }
+
+  /// Check if appointment is today
+  bool get isToday {
+    return DateTimeUtils.isToday(startTime);
+  }
+
+  /// Check if appointment is in the future
+  bool get isFuture {
+    return startTime.isAfter(DateTime.now());
+  }
+
+  /// Check if appointment is in the past
+  bool get isPast {
+    return endTime.isBefore(DateTime.now());
+  }
+
+  @override
+  List<Object?> get props => [
+        id,
+        title,
+        description,
+        hostId,
+        hostName,
+        guestId,
+        guestName,
+        startTime,
+        endTime,
+        location,
+        categoryId,
+        status,
+        qrCode,
+        createdAt,
+        updatedAt,
+      ];
 }
+
+// Alias for backwards compatibility
+typedef Appointment = AppointmentModel;

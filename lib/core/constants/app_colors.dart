@@ -4,6 +4,7 @@ class AppColors {
   static const Color primary = Color(0xFF2196F3);
   static const Color primaryDark = Color(0xFF1976D2);
   static const Color secondary = Color(0xFF03DAC6);
+  static const Color secondaryDark = Color(0xFF018786);
   static const Color background = Color(0xFFF5F5F5);
   static const Color surface = Color(0xFFFFFFFF);
   static const Color error = Color(0xFFB00020);
@@ -24,6 +25,14 @@ class AppColors {
   static const Color grey800 = Color(0xFF424242);
   static const Color grey900 = Color(0xFF212121);
   
+  // Additional greys
+  static const Color grey50 = Color(0xFFFAFAFA);
+  
+  // Background colors
+  static const Color lightBackground = Color(0xFFFAFAFA);
+  static const Color darkBackground = Color(0xFF121212);
+  static const Color darkSurface = Color(0xFF1E1E1E);
+  
   // Success, warning, info colors
   static const Color success = Color(0xFF4CAF50);
   static const Color warning = Color(0xFFFF9800);
@@ -39,5 +48,8 @@ class AppColors {
   static const Color backgroundDark = Color(0xFF121212);
   static const Color surfaceDark = Color(0xFF1E1E1E);
   static const Color textDark = Color(0xFFFFFFFF);
-  static const Color secondaryDark = Color(0xFF03DAC6);
+  
+  // Additional colors needed by the app
+  static const Color primaryLight = Color(0xFFBBDEFB);
+  static const Color errorLight = Color(0xFFFFCDD2);
 }
