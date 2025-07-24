@@ -46,11 +46,23 @@ class QRResultScreen extends StatelessWidget {
               const SizedBox(height: 32),
               PrimaryButton(
                 onPressed: () {
-                  // TODO: Handle action based on QR type
                   if (qrData.type == 'appointment') {
-                    // Navigate to appointment details
+                    Navigator.of(context).pushNamed(
+                      '/appointmentDetails',
+                      arguments: qrData.id,
+                    );
                   } else if (qrData.type == 'user') {
-                    // Navigate to user profile
+                    Navigator.of(context).pushNamed(
+                      '/userProfile',
+                      arguments: qrData.hostId,
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Unknown QR type: ${qrData.type}'),
+                        backgroundColor: AppColors.error,
+                      ),
+                    );
                   }
                 },
                 label: qrData.type == 'appointment' 

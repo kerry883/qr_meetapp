@@ -129,6 +129,36 @@ class AuthRepository {
     }
   }
 
+  /// Resend OTP verification code
+  Future<String> resendOTP(String phoneNumber) async {
+    try {
+      String verificationId = '';
+
+      await _firebaseAuth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: (PhoneAuthCredential credential) {
+          // Auto-verification completed (Android only)
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          throw Exception(_getAuthErrorMessage(e.code));
+        },
+        codeSent: (String id, int? resendToken) {
+          verificationId = id;
+        },
+        codeAutoRetrievalTimeout: (String id) {
+          verificationId = id;
+        },
+        timeout: const Duration(seconds: 60),
+      );
+
+      return verificationId;
+    } on FirebaseAuthException catch (e) {
+      throw Exception(_getAuthErrorMessage(e.code));
+    } catch (e) {
+      throw Exception('Failed to send verification code: $e');
+    }
+  }
+
   /// Get user-friendly error messages
   String _getAuthErrorMessage(String code) {
     switch (code) {
@@ -146,6 +176,8 @@ class AuthRepository {
         return 'This account has been disabled';
       case 'too-many-requests':
         return 'Too many failed attempts. Try again later';
+      case 'invalid-phone-number':
+        return 'The phone number is invalid';
       default:
         return 'Authentication failed. Please try again';
     }

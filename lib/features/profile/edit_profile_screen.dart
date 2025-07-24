@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import 'package:qr_meetapp/core/constants/app_colors.dart';
 import 'package:qr_meetapp/core/constants/app_styles.dart';
 import 'package:qr_meetapp/core/utils/validation_utils.dart';
@@ -19,6 +21,7 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
+  File? _profileImageFile;
   late final _nameController = TextEditingController(text: widget.user.name);
   late final _emailController = TextEditingController(text: widget.user.email);
   late final _phoneController = TextEditingController(text: widget.user.phone);
@@ -58,14 +61,39 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             children: [
               // Profile photo
               GestureDetector(
-                onTap: () {
-                  // TODO: Implement photo change
+                onTap: () async {
+                  final picker = ImagePicker();
+                  final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+                  if (pickedFile != null) {
+                    setState(() {
+                      _profileImageFile = File(pickedFile.path);
+                    });
+                    final profileViewModel = Provider.of<ProfileViewModel>(context, listen: false);
+                    final userId = widget.user.id;
+                    final repo = profileViewModel.repository;
+                    try {
+                      final imageUrl = await repo.uploadProfileImage(userId, pickedFile.path);
+                      final updatedUser = widget.user.copyWith(profileImageUrl: imageUrl);
+                      await profileViewModel.updateProfile(updatedUser);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Profile photo updated successfully!')),
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Failed to update photo: $e'), backgroundColor: AppColors.error),
+                      );
+                    }
+                  }
                 },
                 child: Stack(
                   children: [
                     CircleAvatar(
                       radius: 60,
-                      backgroundImage: NetworkImage(widget.user.profileImageUrl ?? ''),
+                      backgroundImage: _profileImageFile != null
+                          ? FileImage(_profileImageFile!)
+                          : (widget.user.profileImageUrl != null && widget.user.profileImageUrl!.isNotEmpty
+                              ? NetworkImage(widget.user.profileImageUrl!)
+                              : const AssetImage('assets/images/default_avatar.png')) as ImageProvider,
                     ),
                     Positioned(
                       bottom: 0,

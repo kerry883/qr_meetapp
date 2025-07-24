@@ -48,7 +48,9 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
             // Notification icon button
             IconButton(
               icon: const Icon(Icons.notifications_outlined),
-              onPressed: () {}, // TODO: Implement notification action
+              onPressed: () {
+                Navigator.of(context).pushNamed('/notifications');
+              },
             ),
             // Badge indicator for notification count
             if (notificationCount > 0)

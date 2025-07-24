@@ -141,4 +141,21 @@ class AuthViewModel with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  /// Resend OTP to the provided phone number
+  Future<void> resendOTP(String phoneNumber) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await repository.resendOTP(phoneNumber);
+      _error = null;
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }

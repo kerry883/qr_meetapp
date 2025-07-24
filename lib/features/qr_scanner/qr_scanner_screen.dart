@@ -14,6 +14,37 @@ class QRScannerScreen extends StatefulWidget {
 }
 
 class _QRScannerScreenState extends State<QRScannerScreen> {
+  Future<void> _processQrCode(String code) async {
+    if (_isProcessing) return;
+    setState(() {
+      _isProcessing = true;
+      _isScanning = false;
+    });
+    final navigator = Navigator.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final qrData = await _qrService.processQR(code);
+      if (!mounted) return;
+      navigator.pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => QRResultScreen(qrData: qrData),
+        ),
+      );
+    } catch (e) {
+      setState(() {
+        _isProcessing = false;
+        _isScanning = true;
+      });
+      if (mounted) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text('Manual entry failed: ${e.toString()}'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    }
+  }
   final QRService _qrService = QRService();
   final MobileScannerController _controller = MobileScannerController();
   bool _isScanning = true;
@@ -95,8 +126,35 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
             right: 0,
             child: Center(
               child: TextButton(
-                onPressed: () {
-                  // TODO: Implement manual entry
+                onPressed: () async {
+                  final manualCode = await showDialog<String>(
+                    context: context,
+                    builder: (context) {
+                      String input = '';
+                      return AlertDialog(
+                        title: const Text('Enter Code Manually'),
+                        content: TextField(
+                          autofocus: true,
+                          decoration: const InputDecoration(hintText: 'Enter code'),
+                          onChanged: (value) => input = value,
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: const Text('Cancel'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () => Navigator.of(context).pop(input),
+                            child: const Text('Submit'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  if (manualCode != null && manualCode.isNotEmpty) {
+                    // Handle manual code as you would a scanned QR code
+                    _processQrCode(manualCode);
+                  }
                 },
                 child: const Text(
                   'Enter Code Manually',
