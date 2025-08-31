@@ -6,12 +6,12 @@ import 'package:qr_meetapp/data/models/category_model.dart';
 
 class BookingScreen extends StatelessWidget {
   final List<AppointmentCategory> categories = [
-    AppointmentCategory(id: '1', name: 'Business', icon: Icons.business),
-    AppointmentCategory(id: '2', name: 'Academic', icon: Icons.school),
-    AppointmentCategory(id: '3', name: 'Health', icon: Icons.health_and_safety),
-    AppointmentCategory(id: '4', name: 'Interview', icon: Icons.people),
-    AppointmentCategory(id: '5', name: 'Casual', icon: Icons.coffee),
-    AppointmentCategory(id: '6', name: 'Other', icon: Icons.more_horiz),
+    const AppointmentCategory(id: '1', name: 'Business', icon: Icons.business),
+    const AppointmentCategory(id: '2', name: 'Academic', icon: Icons.school),
+    const AppointmentCategory(id: '3', name: 'Health', icon: Icons.health_and_safety),
+    const AppointmentCategory(id: '4', name: 'Interview', icon: Icons.people),
+    const AppointmentCategory(id: '5', name: 'Casual', icon: Icons.coffee),
+    const AppointmentCategory(id: '6', name: 'Other', icon: Icons.more_horiz),
   ];
 
   BookingScreen({super.key});

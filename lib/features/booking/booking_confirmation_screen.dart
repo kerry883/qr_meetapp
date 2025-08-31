@@ -27,7 +27,7 @@ class BookingConfirmationScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Success illustration
-            Icon(
+            const Icon(
               Icons.check_circle,
               size: 120,
               color: AppColors.success,
@@ -78,7 +78,7 @@ class BookingConfirmationScreen extends StatelessWidget {
             const SizedBox(height: 32),
             
             // QR Code section
-            Text(
+            const Text(
               'Scan QR Code at Venue',
               style: AppStyles.titleMedium,
               textAlign: TextAlign.center,

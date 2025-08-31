@@ -107,7 +107,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     "Didn't receive the code? ",
                     style: AppStyles.bodyMedium,
                   ),

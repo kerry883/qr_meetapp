@@ -35,9 +35,9 @@ class HomeScreen extends StatelessWidget {
     ];
 
     final List<AppointmentCategory> sampleCategories = [
-      AppointmentCategory(id: '1', name: 'Business', icon: Icons.business),
-      AppointmentCategory(id: '2', name: 'Health', icon: Icons.health_and_safety),
-      AppointmentCategory(id: '3', name: 'Education', icon: Icons.school),
+      const AppointmentCategory(id: '1', name: 'Business', icon: Icons.business),
+      const AppointmentCategory(id: '2', name: 'Health', icon: Icons.health_and_safety),
+      const AppointmentCategory(id: '3', name: 'Education', icon: Icons.school),
     ];
 
     return Scaffold(

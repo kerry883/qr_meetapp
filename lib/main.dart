@@ -7,17 +7,17 @@ import 'state/auth_state.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Initialize Firebase
-  await Firebase.initializeApp(
+
+  // Initialize Firebase asynchronously
+  Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  
-  // Setup service locator
-  await setupServiceLocator();
-  
+
+  // Setup service locator asynchronously
+  setupServiceLocator();
+
   runApp(
     MultiProvider(
       providers: [

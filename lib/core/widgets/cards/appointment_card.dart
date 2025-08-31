@@ -34,7 +34,7 @@ class AppointmentCard extends StatelessWidget {
                   CircleAvatar(
                     radius: 24,
                     backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-                    child: Icon(
+                    child: const Icon(
                       Icons.person,
                       color: AppColors.primary,
                       size: 24,
@@ -86,7 +86,7 @@ class AppointmentCard extends StatelessWidget {
               const SizedBox(height: 12),
               Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.calendar_today,
                     size: 16,
                     color: AppColors.grey500,
@@ -99,7 +99,7 @@ class AppointmentCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 16),
-                  Icon(
+                  const Icon(
                     Icons.access_time,
                     size: 16,
                     color: AppColors.grey500,

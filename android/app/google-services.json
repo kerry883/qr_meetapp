@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "921354270927",
+    "project_id": "meetapp-6db71",
+    "storage_bucket": "meetapp-6db71.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:921354270927:android:a358493cc898e0e92d1fba",
+        "android_client_info": {
+          "package_name": "com.example.qr_meetapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpo_97CgJSYdY4hWwzhOThlUBtYVoc_ZY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -190,7 +190,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Already have an account?',
                     style: AppStyles.bodyMedium,
                   ),

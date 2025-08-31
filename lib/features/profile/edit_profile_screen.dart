@@ -76,7 +76,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       final updatedUser = widget.user.copyWith(profileImageUrl: imageUrl);
                       await profileViewModel.updateProfile(updatedUser);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Profile photo updated successfully!')),
+                        const SnackBar(content: Text('Profile photo updated successfully!')),
                       );
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(

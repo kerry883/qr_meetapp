@@ -41,7 +41,7 @@ class HostAcceptanceScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'John Doe', // Would come from appointment data
                         style: AppStyles.titleLarge,
                       ),
@@ -58,7 +58,7 @@ class HostAcceptanceScreen extends StatelessWidget {
             const SizedBox(height: 32),
             
             // Meeting details
-            Text(
+            const Text(
               'Meeting Details',
               style: AppStyles.titleMedium,
             ),
@@ -71,7 +71,7 @@ class HostAcceptanceScreen extends StatelessWidget {
             const SizedBox(height: 32),
             
             // Guest message
-            Text(
+            const Text(
               'Message from Guest',
               style: AppStyles.titleMedium,
             ),
@@ -82,7 +82,7 @@ class HostAcceptanceScreen extends StatelessWidget {
                 color: AppColors.grey50,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Text(
+              child: const Text(
                 'Looking forward to discussing the project details with you!',
                 style: AppStyles.bodyMedium,
               ),
