@@ -1,89 +1,97 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:qr_meetapp/core/constants/app_colors.dart';
-import 'package:qr_meetapp/core/constants/app_styles.dart';
+import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_meetapp/core/constants/asset_paths.dart';
+import 'package:qr_meetapp/state/notifications_state.dart';
 
 // Custom app bar for home screen with notification indicator
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
-  // Number of notifications to display as badge
+  // Optional explicit count; if 0, uses NotificationsState
   final int notificationCount;
 
-  // Constructor with optional notification count (default 0)
   const HomeAppBar({
     super.key,
     this.notificationCount = 0,
   });
 
-  // Required height for app bar
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   @override
   Widget build(BuildContext context) {
+    final stateCount = context.watch<NotificationsState>().unreadCount;
+    final badgeCount = notificationCount > 0 ? notificationCount : stateCount;
+
+    final cs = Theme.of(context).colorScheme;
+
     return AppBar(
-      // Logo and app name in title area
-      title: Row(
-        children: [
-          // Display app logo from assets
-          Image.asset(
-            AssetPaths.logo,
-            height: 32,
-          ),
-          const SizedBox(width: 12), // Spacing between logo and text
-          // App name text
-          Text(
-            'MeetApp',
-            style: AppStyles.titleLarge.copyWith(
-              fontWeight: FontWeight.bold,
-              color: AppColors.grey900,
-            ),
-          ),
-        ],
-      ),
-      // Notification icon with badge indicator
-      actions: [
-        // Stack for badge positioning
-        Stack(
+      title: GestureDetector(
+        onTap: () => context.go('/home'),
+        child: Row(
           children: [
-            // Notification icon button
-            IconButton(
-              icon: const Icon(Icons.notifications_outlined),
-              onPressed: () {
-                Navigator.of(context).pushNamed('/notifications');
-              },
+            Hero(
+              tag: 'app-logo',
+              child: Image.asset(AssetPaths.logo, height: 32),
             ),
-            // Badge indicator for notification count
-            if (notificationCount > 0)
-              Positioned(
-                right: 8,
-                top: 8,
-                // Badge container
-                child: Container(
-                  padding: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    color: AppColors.error,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  constraints: const BoxConstraints(
-                    minWidth: 18,
-                    minHeight: 18,
-                  ),
-                  // Notification count text
-                  child: Text(
-                    '$notificationCount',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              )
+            const SizedBox(width: 12),
+            Text(
+              'MeetApp',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: cs.onSurface,
+              ),
+            ),
           ],
         ),
+      ),
+      actions: [
+        IconButton(
+          icon: Icon(Icons.search, color: cs.onSurfaceVariant),
+          onPressed: () {
+            HapticFeedback.lightImpact();
+            // TODO: Implement search functionality
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Search feature coming soon!')),
+            );
+          },
+        ),
+        Badge.count(
+          count: badgeCount,
+          isLabelVisible: badgeCount > 0,
+          backgroundColor: cs.primary,
+          textColor: cs.onPrimary,
+          child: IconButton(
+            icon: Icon(Icons.notifications_outlined, color: cs.onSurfaceVariant),
+            onPressed: () {
+              HapticFeedback.lightImpact();
+              context.push('/home/notifications');
+            },
+          ),
+        ),
       ],
-      elevation: 0, // Remove shadow
-      backgroundColor: Colors.transparent, // Transparent background
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
+      flexibleSpace: ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+        child: Container(
+          decoration: BoxDecoration(
+            color: cs.surface.withValues(alpha: 0.7),
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                cs.surface.withValues(alpha: 0.8),
+                cs.surface.withValues(alpha: 0.6),
+              ],
+            ),
+          ),
+        ),
+        ),
+      ),
     );
   }
 }

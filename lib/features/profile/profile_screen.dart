@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_meetapp/core/constants/app_colors.dart';
 import 'package:qr_meetapp/core/theme/app_theme.dart';
 import 'package:qr_meetapp/core/widgets/cards/settings_tile.dart';
+import 'package:qr_meetapp/state/auth_state.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -82,7 +85,12 @@ class ProfileScreen extends StatelessWidget {
                     icon: Icons.logout,
                     title: 'Logout',
                     color: AppColors.error,
-                    onTap: () {},
+                    onTap: () {
+                      // Call logout from AuthState and navigate to login screen
+                      final authState = Provider.of<AuthState>(context, listen: false);
+                      authState.logout();
+                      context.go('/login');
+                    },
                   ),
                   SettingsTile(
                     icon: Icons.delete,

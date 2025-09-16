@@ -11,15 +11,15 @@ class ConnectivityUtils with ChangeNotifier {
   }
 
   Future<void> _init() async {
-    Connectivity().onConnectivityChanged.listen((result) {
-      _isConnected = result != ConnectivityResult.none;
+    Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> results) {
+      _isConnected = !results.contains(ConnectivityResult.none);
       notifyListeners();
     });
   }
 
   Future<void> checkConnection() async {
-    final result = await Connectivity().checkConnectivity();
-    _isConnected = result != ConnectivityResult.none;
+    final List<ConnectivityResult> results = await Connectivity().checkConnectivity();
+    _isConnected = !results.contains(ConnectivityResult.none);
     notifyListeners();
   }
 }

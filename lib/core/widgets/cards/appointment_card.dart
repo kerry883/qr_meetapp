@@ -121,7 +121,7 @@ class AppointmentCard extends StatelessWidget {
   }
 
   Color _getStatusColor(String status) {
-    final appointmentStatus = AppointmentStatus.fromString(status);
+    final appointmentStatus = appointmentStatusFromString(status);
     switch (appointmentStatus) {
       case AppointmentStatus.pending:
         return AppColors.warning;
@@ -133,6 +133,8 @@ class AppointmentCard extends StatelessWidget {
         return AppColors.error;
       case AppointmentStatus.completed:
         return AppColors.info;
+      default:
+        return AppColors.grey500;
     }
   }
 

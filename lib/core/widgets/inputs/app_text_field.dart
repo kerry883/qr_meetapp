@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:qr_meetapp/core/theme/app_theme.dart';
 
 class AppTextField extends StatelessWidget {
   final TextEditingController? controller;
@@ -39,18 +38,9 @@ class AppTextField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         hintText: hintText,
-        labelStyle: AppTheme.textTheme.bodyLarge,
         prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
         suffixIcon: suffixIcon,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 16,
-          horizontal: 16,
-        ),
       ),
-      style: AppTheme.textTheme.bodyLarge,
     );
   }
 }

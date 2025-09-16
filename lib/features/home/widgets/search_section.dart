@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:qr_meetapp/core/constants/app_colors.dart';
 import 'package:qr_meetapp/core/widgets/inputs/app_text_field.dart';
 
 // Search section component for home screen
@@ -19,30 +18,29 @@ class SearchSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Horizontal layout with search field and filter button
+    final cs = Theme.of(context).colorScheme;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
         children: [
-          // Expand search field to fill available space
           Expanded(
-            // Custom text field for search
             child: AppTextField(
               hintText: 'Search meetings, hosts...',
-              prefixIcon: Icons.search, // Search icon
-              onChanged: onSearch, // Text change callback
+              prefixIcon: Icons.search,
+              onChanged: onSearch,
             ),
           ),
-          const SizedBox(width: 12), // Spacing between elements
-          // Filter button container
-          Container(
-            decoration: BoxDecoration(
-              color: AppColors.primary, // Primary color background
-              borderRadius: BorderRadius.circular(12), // Rounded corners
-            ),
-            // Filter icon button
-            child: IconButton(
-              icon: const Icon(Icons.tune, color: Colors.white), // White icon
-              onPressed: onFilterPressed, // Filter press callback
+          const SizedBox(width: 12),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: ColoredBox(
+              color: cs.primary,
+              child: IconButton(
+                icon: const Icon(Icons.tune, color: Colors.white),
+                onPressed: onFilterPressed,
+                tooltip: 'Filter',
+              ),
             ),
           ),
         ],

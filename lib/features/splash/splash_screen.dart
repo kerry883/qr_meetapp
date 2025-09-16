@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import 'package:lottie/lottie.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:qr_meetapp/core/theme/app_theme.dart';
 import 'package:qr_meetapp/core/widgets/buttons/primary_button.dart';
 import 'package:qr_meetapp/navigation/app_router.dart';
+import 'package:qr_meetapp/state/auth_state.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -36,8 +38,15 @@ class _SplashScreenState extends State<SplashScreen> {
   void _startNavigationTimer() {
     _navigationTimer?.cancel();
     _navigationTimer = Timer(const Duration(seconds: 2), () {
-      // Navigate to home screen after delay
-      context.go(AppRouter.home);
+      // Check if user is authenticated
+      final authState = Provider.of<AuthState>(context, listen: false);
+      if (authState.currentUser != null) {
+        // Navigate to home screen if authenticated
+        context.go(AppRouter.home);
+      } else {
+        // Navigate to login screen if not authenticated
+        context.go(AppRouter.login);
+      }
     });
   }
 
@@ -121,7 +130,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             const SizedBox(height: 20),
             Text(
-              'Connection Required',
+              'Internet Connection Required',
               style: AppTheme.textTheme.displaySmall,
               textAlign: TextAlign.center,
             ),

@@ -1,9 +1,11 @@
 import 'package:get_it/get_it.dart';
+import 'package:qr_meetapp/data/repositories/appointment_repository.dart';
 
 final getIt = GetIt.instance;
 
 void setupServiceLocator() {
-  // Example registration
-  // getIt.registerSingleton<AuthService>(AuthService());
-  // getIt.registerSingleton<AppointmentRepository>(AppointmentRepository());
+  // Repositories
+  if (!getIt.isRegistered<AppointmentRepository>()) {
+    getIt.registerLazySingleton<AppointmentRepository>(() => AppointmentRepository());
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qr_meetapp/core/widgets/cards/appointment_card.dart';
 import 'package:qr_meetapp/data/models/appointment_model.dart';
 
@@ -28,8 +29,11 @@ class UpcomingAppointments extends StatelessWidget {
           return Padding(
             // Right padding between cards
             padding: const EdgeInsets.only(right: 16.0),
-            // Appointment card widget
-            child: AppointmentCard(appointment: appointments[index]),
+            // Appointment card widget with navigation to details
+            child: AppointmentCard(
+              appointment: appointments[index],
+              onTap: () => context.push('/home/appointments/${appointments[index].id}'),
+            ),
           );
         },
       ),

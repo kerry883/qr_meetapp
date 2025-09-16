@@ -16,13 +16,13 @@ class ConnectivityProvider extends ChangeNotifier {
     // Check initial connectivity
     var result = await Connectivity().checkConnectivity();
     _updateStatus(result);
-    
+
     // Listen for connectivity changes
     Connectivity().onConnectivityChanged.listen(_updateStatus);
   }
 
-  void _updateStatus(ConnectivityResult result) {
-    final newStatus = result != ConnectivityResult.none;
+  void _updateStatus(List<ConnectivityResult> results) {
+    final newStatus = !results.contains(ConnectivityResult.none);
     if (newStatus != _isConnected) {
       _isConnected = newStatus;
       notifyListeners();

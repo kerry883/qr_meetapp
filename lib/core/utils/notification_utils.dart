@@ -34,7 +34,7 @@ class NotificationUtils {
   }) async {
     final scheduledTime = meetingTime.subtract(advanceTime);
     
-    await _notificationsPlugin.zonedSchedule(
+      await _notificationsPlugin.zonedSchedule(
       id,
       title,
       body,
@@ -54,8 +54,6 @@ class NotificationUtils {
         ),
       ),
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,
     );
   }

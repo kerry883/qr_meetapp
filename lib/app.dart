@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
     final themeState = Provider.of<ThemeState>(context);
     
     return MaterialApp.router(
-      title: 'MeetApp',
+      title: 'QRMeetApp',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
